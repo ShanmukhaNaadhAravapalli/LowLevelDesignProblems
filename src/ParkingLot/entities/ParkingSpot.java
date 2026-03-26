@@ -18,11 +18,11 @@ public class ParkingSpot {
         this.vehicle = null;
         this.spotType = type;
     }
-    public void parkVehicle(Vehicle vehicle){
+    public synchronized void parkVehicle(Vehicle vehicle){
         this.vehicle = vehicle;
         this.isAvailable = false;
     }
-    public void unparkVehicle(){
+    public synchronized void unparkVehicle(){
         this.vehicle = null;
         this.isAvailable = true;
     }

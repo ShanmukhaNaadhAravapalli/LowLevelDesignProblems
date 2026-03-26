@@ -135,6 +135,7 @@ class Inventory{
         }
     }
 
+
     public Item getItem(int codeNumber)  {
 
         for (ItemShelf itemShelf : itemShelves) {
@@ -368,10 +369,7 @@ class VendingMachineContext {
         this.quantity = quantity;
     }
 
-
 }
-
-
 
 
 public class Main {

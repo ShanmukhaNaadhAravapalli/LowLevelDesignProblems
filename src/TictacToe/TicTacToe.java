@@ -3,88 +3,70 @@ package TictacToe;
 import java.util.Scanner;
 
 // Main class to run the game
-class TicTacToeGame {
-    public static void main(String[] args) {
-        Game game = new Game();
-        game.start();
+
+
+// Enums for game state and piece types
+enum PieceType {
+    X("X"), O("O"), EMPTY(" ");
+
+    private String symbol;
+
+    PieceType(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+        return symbol;
     }
 }
 
-// Game class to manage the overall game flow
-class Game {
-    private Board board;
-    private Player[] players;
-    private int currentPlayerIndex;
-    private GameStatus status;
+enum GameStatus {
+    IN_PROGRESS,
+    WINNER_X,
+    WINNER_O,
+    DRAW
+}
 
-    public Game() {
-        initializeGame();
+class Player {
+    private String name;
+    private PieceType pieceType;
+
+    public Player(String name, PieceType pieceType) {
+        this.name = name;
+        this.pieceType = pieceType;
     }
 
-    private void initializeGame() {
-        this.board = new Board(3);
-        this.players = new Player[2];
-        this.players[0] = new Player("Player 1", PieceType.X);
-        this.players[1] = new Player("Player 2", PieceType.O);
-        this.currentPlayerIndex = 0;
-        this.status = GameStatus.IN_PROGRESS;
+    public String getName() {
+        return name;
     }
 
-    public void start() {
-        Scanner scanner = new Scanner(System.in);
+    public PieceType getPieceType() {
+        return pieceType;
+    }
+}
 
-        while (status == GameStatus.IN_PROGRESS) {
-            board.display();
-            Player currentPlayer = players[currentPlayerIndex];
-            System.out.println(currentPlayer.getName() + "'s turn (" + currentPlayer.getPieceType() + ")");
+// Move class to represent a player's move
+class Move {
+    private int row;
+    private int col;
+    private Player player;
 
-            // Get valid move
-            Move move = null;
-            while (move == null) {
-                System.out.print("Enter row and column (0-2): ");
-                try {
-                    int row = scanner.nextInt();
-                    int col = scanner.nextInt();
-                    move = new Move(row, col, currentPlayer);
-
-                    if (!board.makeMove(move)) {
-                        System.out.println("Invalid move! Try again.");
-                        move = null;
-                    }
-                } catch (Exception e) {
-                    System.out.println("Invalid input! Please enter numbers between 0-2.");
-                    scanner.nextLine(); // clear buffer
-                }
-            }
-
-            // Check game status
-            status = board.checkGameStatus();
-
-            if (status == GameStatus.IN_PROGRESS) {
-                currentPlayerIndex = (currentPlayerIndex + 1) % 2;
-            }
-        }
-
-        // Game over
-        board.display();
-        displayResult();
-        scanner.close();
+    public Move(int row, int col, Player player) {
+        this.row = row;
+        this.col = col;
+        this.player = player;
     }
 
-    private void displayResult() {
-        switch (status) {
-            case WINNER_X:
-                System.out.println("Player 1 (X) wins!");
-                break;
-            case WINNER_O:
-                System.out.println("Player 2 (O) wins!");
-                break;
-            case DRAW:
-                System.out.println("Game ended in a draw!");
-                break;
-            default:
-                break;
-        }
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
 
@@ -185,73 +167,84 @@ class Board {
     }
 }
 
-// Player class
-class Player {
-    private String name;
-    private PieceType pieceType;
+// Game class to manage the overall game flow
+class Game {
+    private Board board;
+    private Player[] players;
+    private int currentPlayerIndex;
+    private GameStatus status;
 
-    public Player(String name, PieceType pieceType) {
-        this.name = name;
-        this.pieceType = pieceType;
+    public Game() {
+        initializeGame();
     }
 
-    public String getName() {
-        return name;
+    private void initializeGame() {
+        this.board = new Board(3);
+        this.players = new Player[2];
+        this.players[0] = new Player("Player 1", PieceType.X);
+        this.players[1] = new Player("Player 2", PieceType.O);
+        this.currentPlayerIndex = 0;
+        this.status = GameStatus.IN_PROGRESS;
     }
 
-    public PieceType getPieceType() {
-        return pieceType;
+    public void start() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (status == GameStatus.IN_PROGRESS) {
+            board.display();
+            Player currentPlayer = players[currentPlayerIndex];
+            System.out.println(currentPlayer.getName() + "'s turn (" + currentPlayer.getPieceType() + ")");
+
+            // Get valid move
+            Move move = null;
+            while (move == null) {
+                System.out.print("Enter row and column (0-2): ");
+                try {
+                    int row = scanner.nextInt();
+                    int col = scanner.nextInt();
+                    move = new Move(row, col, currentPlayer);
+
+                    if (!board.makeMove(move)) {
+                        System.out.println("Invalid move! Try again.");
+                        move = null;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid input! Please enter numbers between 0-2.");
+                    scanner.nextLine(); // clear buffer
+                }
+            }
+
+            // Check game status
+            status = board.checkGameStatus();
+
+            if (status == GameStatus.IN_PROGRESS) {
+                currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+            }
+        }
+
+        // Game over
+        board.display();
+        displayResult();
+        scanner.close();
+    }
+
+    private void displayResult() {
+        switch (status) {
+            case WINNER_X:
+                System.out.println("Player 1 (X) wins!");
+                break;
+            case WINNER_O:
+                System.out.println("Player 2 (O) wins!");
+                break;
+            case DRAW:
+                System.out.println("Game ended in a draw!");
+                break;
+            default:
+                break;
+        }
     }
 }
 
-// Move class to represent a player's move
-class Move {
-    private int row;
-    private int col;
-    private Player player;
-
-    public Move(int row, int col, Player player) {
-        this.row = row;
-        this.col = col;
-        this.player = player;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-}
-
-// Enums for game state and piece types
-enum PieceType {
-    X("X"), O("O"), EMPTY(" ");
-
-    private String symbol;
-
-    PieceType(String symbol) {
-        this.symbol = symbol;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-}
-
-enum GameStatus {
-    IN_PROGRESS,
-    WINNER_X,
-    WINNER_O,
-    DRAW
-}
-public class TicTacToe {
-}
 
 // Interface for different player types
 interface PlayerStrategy {
@@ -317,6 +310,13 @@ class EnhancedPlayer {
 
     public PieceType getPieceType() {
         return pieceType;
+    }
+}
+
+class TicTacToe {
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
     }
 }
 

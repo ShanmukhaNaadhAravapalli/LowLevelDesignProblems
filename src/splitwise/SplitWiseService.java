@@ -54,7 +54,7 @@ public class SplitWiseService {
         System.out.println(payer.getName() + " is settling up " + amount + " with " + payee.getName());
 
         payee.getBalanceSheetById(group.getId()).adjustBalance(payer, -amount);
-        payer.getBalanceSheetById(group.getId()).adjustBalance(payee, -amount);
+        payer.getBalanceSheetById(group.getId()).adjustBalance(payee, amount);
     }
 
     public void showBalanceSheet(String userId, Group group) {
